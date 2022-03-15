@@ -42,7 +42,7 @@ def retrieve_token(authorization, issuer, scope='items'):
         raise HTTPException(status_code=400, detail=response.text)
 
 
-# Get auth token endpoint
+# # Get auth token endpoint
 @app.post('/token')
 def login(request: Request):
     return retrieve_token(
@@ -103,7 +103,7 @@ def get_books_by_title(search:Optional[str] = None, token: str = Depends(oauth2_
     if search is None:
         search = ''
     try:
-        books = sql("SELECT title,authors,isbn from works where title ilike '%%%s%%'" % search)
+        books = sql("SELECT title,authors,isbn,description from works where title ilike '%%%s%%'" % search)
         return APIResponse(
             search = search,
             books = books,
@@ -115,11 +115,11 @@ def get_books_by_title(search:Optional[str] = None, token: str = Depends(oauth2_
             status_code="401")
 
 @books_router.get('/authors', response_model=APIResponse)
-def get_books_by_authors(search:Optional[str] = None):
+def get_books_by_authors(search:Optional[str] = None, token: str = Depends(oauth2_scheme)):
     if search is None:
         search = ''
     try:
-        books = sql("SELECT title,authors,isbn from works where authors ilike '%%%s%%'" % search)
+        books = sql("SELECT title,authors,isbn,description from works where authors ilike '%%%s%%'" % search)
         return APIResponse(
         search = search,
         books = books,
@@ -127,7 +127,7 @@ def get_books_by_authors(search:Optional[str] = None):
         status_code="200")
     except Exception as e:
         print(e)
-        return APIResponse(books=[],
+        return APIResponse(bddooks=[],
         status_code="401")
 
 @books_router.get('/isbn', response_model=APIResponse)
@@ -136,7 +136,7 @@ def get_books_by_isbn(search:Optional[str] = None, token: str = Depends(oauth2_s
         search = ''
     try:
         # Check if the search pattern begins with the isbn
-        books = sql("SELECT title,authors,isbn from works where isbn ilike '%s%%'" % search)
+        books = sql("SELECT title,authors,isbn,description from works where isbn ilike '%s%%'" % search)
         return APIResponse(
         search = search,
         books = books,
@@ -152,7 +152,7 @@ def get_books_by_description(search:Optional[str] = None, token: str = Depends(o
     if search is None:
         search = ''
     try:
-        books = sql("SELECT title,authors,isbn from works where description ilike '%%%s%%'" % search)
+        books = sql("SELECT title,authors,isbn,description from works where description ilike '%%%s%%'" % search)
         return APIResponse(
             search = search,
             books = books,
