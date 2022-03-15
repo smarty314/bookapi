@@ -21,13 +21,4 @@ RUN python3.8 -m pip install pipenv
 WORKDIR /app
 RUN pipenv install
 
-# RUN python3.8 -m pip install pipenv
-#ENTRYPOINT /app/entrypoint.sh
-
-
-#docker build -t eddenburrow/apidemo:latest -f Dockerfile .
-
-# eksctl delete cluster --name=my-cluster
-
-
-# eksctl create cluster --fargate --name my-gate
+ENTRYPOINT /app/entrypoint.sh
