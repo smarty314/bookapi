@@ -115,11 +115,11 @@ def get_books_by_title(search:Optional[str] = None, token: str = Depends(oauth2_
             status_code="401")
 
 @books_router.get('/authors', response_model=APIResponse)
-def get_books_by_authors(search:Optional[str] = None, token: str = Depends(oauth2_scheme)):
+def get_books_by_authors(search:Optional[str] = None):
     if search is None:
         search = ''
     try:
-        books = sql("SELECT title,authors,isbn from works where author ilike '%%%s%%'" % search)
+        books = sql("SELECT title,authors,isbn from works where authors ilike '%%%s%%'" % search)
         return APIResponse(
         search = search,
         books = books,
@@ -135,7 +135,8 @@ def get_books_by_isbn(search:Optional[str] = None, token: str = Depends(oauth2_s
     if search is None:
         search = ''
     try:
-        books = sql("SELECT title,authors,isbn from works where isbn ilike '%%%s%%'" % search)
+        # Check if the search pattern begins with the isbn
+        books = sql("SELECT title,authors,isbn from works where isbn ilike '%s%%'" % search)
         return APIResponse(
         search = search,
         books = books,
